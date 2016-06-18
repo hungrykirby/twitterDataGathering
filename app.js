@@ -19,20 +19,26 @@ client.stream('statuses/sample', function (stream) {
       stream.on('data', function (data) {
         //console.log(data.user);
           var text = data.text;
-          str += text;
+          //str += text;
           var lang = '';
           try{
             lang = data.user.lang;
             //console.log(lang);
           }catch(e){
-            console.log(e.message);
+            //console.log(e.message);
           }
 
           if(lang === 'ja'){
-            fs.appendFileSync('twitterData01.txt', text, 'utf8', function(err){
-              console.log(err);
-            });
-            console.log(text);
+            count++;
+            var url = /http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/gi;
+            if(text.match(/RT/) === null && text.match(url) === null){
+              text = text.replace(/@\w+/, '');
+              text = text.replace(/\s/, '');
+              fs.appendFileSync('twitterData02.txt', text + '\n', 'utf8', function(err){
+                console.log(err);
+              });
+              console.log(count + ':' + text);
+            }
 
           }
         });
